@@ -164,6 +164,7 @@ class OAuth2Provider(object):
                 grantsetter=self._grantsetter,
             )
             self._validator = validator
+            # oauthlib.oauth2.Server
             return Server(
                 validator,
                 token_expires_in=expires_in,
@@ -461,7 +462,10 @@ class OAuth2Provider(object):
                     return jsonify(user=req.user)
                 return jsonify(status='error')
         """
+        # 提取参数
         uri, http_method, body, headers = extract_params()
+        # 验证请求并返回
+        # 调用 oauthlib.oauth2.Server().verify_request() 验参
         return self.server.verify_request(
             uri, http_method, body, headers, scopes
         )
@@ -535,6 +539,7 @@ class OAuth2Provider(object):
                 if hasattr(request, 'oauth') and request.oauth:
                     return f(*args, **kwargs)
 
+                # 验证请求
                 valid, req = self.verify_request(scopes)
 
                 for func in self._after_request_funcs:
